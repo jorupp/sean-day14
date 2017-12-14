@@ -19,12 +19,12 @@ var root = d3.select(document.getElementById("chart")).append("table").append("t
 function update(regions, x, y) {
     var r = root.selectAll('tr').data(regions);
     r = r.enter().append('tr').merge(r);
-    r.each(function() {
+    r.each(function(v, ix1) {
         var c = d3.select(this).selectAll('td').data(function(d) { return d; });
         c = c.enter().append('td').merge(c);
         c.text(function(d) { return d; });
+        c.style(function(d, ix2) { return (y == ix1 && x == ix2) ? { 'font-weight': 'bold'} : { };  })
     });
-    console.log('a');
 }
 
 var run = blocks => {
