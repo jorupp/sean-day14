@@ -3,6 +3,7 @@ var R = require('ramda');
 var knot = require('./day10');
 var M = require('mnemonist');
 var d3 = require('d3');
+var randomColor = require('./randomColor');
 
 var toHashes = x => R.map(y => knot(`${x}-${y}`), R.range(0, 128));
 var parseInput = R.pipe(R.trim, toHashes);
@@ -15,6 +16,7 @@ var add = (a, b) => R.map(R.sum, R.zip(a, b));
 var inBounds = pos => 0 <= pos.x && pos.x <= 127 && 0 <= pos.y && pos.y <= 127; 
 
 var root = d3.select(document.getElementById("chart")).append("table").append("tbody");
+var colors = {};
 
 function update(regions, x, y) {
     var r = root.selectAll('tr').data(regions);
@@ -23,7 +25,13 @@ function update(regions, x, y) {
         var c = d3.select(this).selectAll('td').data(function(d) { return d; });
         c = c.enter().append('td').merge(c);
         c.text(function(d) { return d; });
-        c.style(function(d, ix2) { return (y == ix1 && x == ix2) ? { 'font-weight': 'bold'} : { };  })
+        c.style('font-weight', function(d, ix2) { return (y == ix1 && x == ix2) ? 'bold' : null; });
+        c.style('color', function(d) {
+            if(!colors[d]) {
+                colors[d] = randomColor();
+            }
+            return colors[d];
+        })
     });
 }
 
